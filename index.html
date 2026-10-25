@@ -51,6 +51,21 @@ body{background:var(--void);color:var(--chrome-fg);overflow:hidden;font-family:v
 .mount{clip-path:inset(100% 0 0 0)}
 .go .mount{clip-path:inset(0 0 0 0)}
 
+/* hand-written signature under STILL */
+.sig{position:absolute;left:640px;top:520px;width:900px;height:300px;pointer-events:none;rotate:-5deg;
+  filter:drop-shadow(0 3px 8px rgba(4,7,6,.55));
+  -webkit-mask-image:linear-gradient(100deg,#000 0 46%,transparent 52%);mask-image:linear-gradient(100deg,#000 0 46%,transparent 52%);
+  -webkit-mask-size:300% 100%;mask-size:300% 100%;-webkit-mask-position:100% 0;mask-position:100% 0;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.sig svg{display:block;overflow:visible}
+.sig text{font-family:var(--sig-font,"Mrs Saint Delafield"),"Brush Script MT",cursive;font-size:var(--sig-size,190px);fill:var(--lime);
+  stroke:var(--lime);stroke-width:1.1;stroke-dasharray:900;stroke-dashoffset:900;fill-opacity:0;paint-order:stroke}
+.go .sig{animation:sigReveal 2.3s cubic-bezier(.55,.05,.25,1) .55s forwards}
+.go .sig text{animation:sigStroke 2.3s cubic-bezier(.55,.05,.25,1) .55s forwards,sigFill 1.4s ease 1.5s forwards}
+@keyframes sigReveal{to{-webkit-mask-position:0 0;mask-position:0 0}}
+@keyframes sigStroke{to{stroke-dashoffset:0}}
+@keyframes sigFill{to{fill-opacity:1}}
+@media (prefers-reduced-motion: reduce){.sig{-webkit-mask-image:none;mask-image:none}.sig text{stroke-dashoffset:0;fill-opacity:1;animation:none!important}}
+
 /* CTA light sweep */
 .sheen{position:absolute;overflow:hidden;border-radius:44px}
 .sheen::after{content:"";position:absolute;top:0;bottom:0;width:180px;left:-220px;
@@ -76,6 +91,9 @@ body{background:var(--void);color:var(--chrome-fg);overflow:hidden;font-family:v
 #fallback{position:fixed;inset:0;display:grid;place-items:center;padding-inline:max(16px,env(safe-area-inset-left,0px))}
 @media (max-width:1280px){#chrome .hint{display:none}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Pinyon+Script&family=Corinthia:wght@400;700&display=swap">
 </head>
 <body>
 <div id="view">
@@ -93,6 +111,9 @@ body{background:var(--void);color:var(--chrome-fg);overflow:hidden;font-family:v
     <div class="ui clip rv navw" style="left:1214px;top:50px;width:99px;height:24px;--d:.50s"><img src="assets/nav.png" alt="Contact" style="left:-606px;top:0"></div>
 
     <div class="ui rv lift" style="left:1690px;top:50px;width:181px;height:42px;--d:.62s"><img src="assets/booknow.png" alt="Book now" style="left:0;top:0"></div>
+
+    <div class="sig" id="sig" aria-hidden="true"><svg width="900" height="300" viewBox="0 0 900 300"><text x="40" y="190">Carpathian</text></svg></div>
+    <span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Carpathian</span>
 
     <!-- tagline: two lines rise out of their own masks, underline draws -->
     <div class="ui clip line" style="left:99px;top:719px;width:533px;height:50px"><img src="assets/tagline.png" alt="A deeper kind" style="left:0;top:-7px;--d:.35s"></div>
@@ -310,6 +331,9 @@ const TR=new Float32Array(40);
 const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, eo=x=>1-Math.pow(1-x,3), cl=x=>Math.min(1,Math.max(0,x));
 let t0=performance.now(), goTimer, chromeTimer;
 function showChrome(ms){chrome.classList.add('show');clearTimeout(chromeTimer);chromeTimer=setTimeout(()=>chrome.classList.remove('show'),ms);}
+const sigEl=document.getElementById('sig');
+{const q=new URLSearchParams(location.search).get('f');const F={'2':['Pinyon Script','150px'],'3':['Corinthia','210px']};
+ if(F[q]){document.documentElement.style.setProperty('--sig-font','"'+F[q][0]+'"');document.documentElement.style.setProperty('--sig-size',F[q][1]);}}
 function start(){
   stage.classList.remove('go');void stage.offsetWidth;
   t0=performance.now()-(reduce?9000:0);
@@ -342,6 +366,7 @@ function draw(now){
   const LX=ix+(lt.x-ix)*lW,LY=iy+(lt.y-iy)*lW,LON=Math.max(lt.on,iO);
   const DEP={ribB:14,letters:20,ribF:30};
   const pos=(k,dep)=>({x:L[k].x-par.x*dep,y:L[k].y-par.y*dep*.6});
+  if(sigEl)sigEl.style.translate=`${(-par.x*26).toFixed(2)}px ${(-par.y*15).toFixed(2)}px`;
   for(let i=0;i<10;i++){const p=trail[trail.length-1-i];
     if(p){const life=Math.exp(-(now-p.t)/450);TR[i*4]=p.x;TR[i*4+1]=p.y;TR[i*4+2]=p.vx/1000*life;TR[i*4+3]=p.vy/1000*life;}
     else{TR[i*4]=-9999;TR[i*4+1]=-9999;TR[i*4+2]=0;TR[i*4+3]=0;}}
