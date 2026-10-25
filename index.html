@@ -57,7 +57,7 @@ body{background:var(--void);color:var(--chrome-fg);overflow:hidden;font-family:v
   -webkit-mask-image:linear-gradient(100deg,#000 0 46%,transparent 52%);mask-image:linear-gradient(100deg,#000 0 46%,transparent 52%);
   -webkit-mask-size:300% 100%;mask-size:300% 100%;-webkit-mask-position:100% 0;mask-position:100% 0;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .sig svg{display:block;overflow:visible}
-.sig text{font-family:var(--sig-font,"Mrs Saint Delafield"),"Brush Script MT",cursive;font-size:var(--sig-size,190px);fill:var(--lime);
+.sig text{font-family:"Mrs Saint Delafield","Brush Script MT",cursive;font-size:190px;fill:var(--lime);
   stroke:var(--lime);stroke-width:1.1;stroke-dasharray:900;stroke-dashoffset:900;fill-opacity:0;paint-order:stroke}
 .go .sig{animation:sigReveal 2.3s cubic-bezier(.55,.05,.25,1) .55s forwards}
 .go .sig text{animation:sigStroke 2.3s cubic-bezier(.55,.05,.25,1) .55s forwards,sigFill 1.4s ease 1.5s forwards}
@@ -93,7 +93,7 @@ body{background:var(--void);color:var(--chrome-fg);overflow:hidden;font-family:v
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Pinyon+Script&family=Corinthia:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&display=swap">
 </head>
 <body>
 <div id="view">
@@ -332,8 +332,6 @@ const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2, eo=x=>1-Math.pow(1-x,3), cl=x=
 let t0=performance.now(), goTimer, chromeTimer;
 function showChrome(ms){chrome.classList.add('show');clearTimeout(chromeTimer);chromeTimer=setTimeout(()=>chrome.classList.remove('show'),ms);}
 const sigEl=document.getElementById('sig');
-{const q=new URLSearchParams(location.search).get('f');const F={'2':['Pinyon Script','150px'],'3':['Corinthia','210px']};
- if(F[q]){document.documentElement.style.setProperty('--sig-font','"'+F[q][0]+'"');document.documentElement.style.setProperty('--sig-size',F[q][1]);}}
 function start(){
   stage.classList.remove('go');void stage.offsetWidth;
   t0=performance.now()-(reduce?9000:0);
