@@ -2,7 +2,7 @@
 
 Hero screen for STILL, a glass-dome glamping retreat in the Carpathians.
 
-Static site, no build step. A WebGL scene renders the photo as a quiet cinemagraph (slow fog, sky drift, fire flicker, breathing silk ribbons) with a subtle mouse parallax. STILL and the tagline are set in Unbounded, the same wide grotesk character as the logo. The interface is real HTML: navigation, tagline, and a working booking bar (date and guest pickers).
+Static site, no build step. A WebGL scene renders the photo as a quiet cinemagraph (slow fog, sky drift, fire flicker, breathing silk ribbons) with a subtle mouse parallax. STILL uses the logo's own letterforms (Monument Extended Ultrabold outlines, `assets/still.svg`); the tagline is set in Unbounded Light. The interface is real HTML: navigation, tagline, and a working booking bar (date and guest pickers).
 
 Motion rules:
 - one entrance moment: the scene settles and the "Carpathian" signature writes itself (≈2.4 s in total);

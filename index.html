@@ -13,7 +13,7 @@
 <link rel="preload" as="image" href="assets/bg.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;900&family=Montserrat:wght@300;400;600&family=Mrs+Saint+Delafield&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300&family=Montserrat:wght@300;400;600&family=Mrs+Saint+Delafield&display=swap">
 <script>document.documentElement.classList.add('js')</script>
 <style>
 /* Layout: full-bleed WebGL scene (cover-fit) + hero layer in design coordinates (1920×1080) + responsive UI layer pinned to the viewport */
@@ -47,7 +47,7 @@ button{font:inherit;color:inherit}
 .hero-layer{position:fixed;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;pointer-events:none;z-index:1}
 .hero-layer .static{position:absolute;max-width:none;display:none}
 .no-gl .hero-layer .static{display:block}
-.still-word{left:86px;top:241px;font-family:var(--font-display);font-weight:900;font-size:378px;line-height:469px;letter-spacing:-.02em;color:#F5EBDC;white-space:nowrap}
+
 
 /* hand-written signature */
 .sig{position:absolute;left:640px;top:520px;width:900px;height:300px;rotate:-5deg;filter:drop-shadow(0 3px 8px rgba(4,7,6,.55))}
@@ -182,7 +182,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 
 <div class="hero-layer" id="heroLayer" aria-hidden="true">
   <img class="static" src="assets/ribbonB.webp" alt="" style="left:0;top:233px">
-  <span class="static still-word">STILL</span>
+  <img class="static" src="assets/still.svg" alt="" style="left:99px;top:330px;width:1415px;height:290px">
   <img class="static" src="assets/ribbonF.webp" alt="" style="left:0;top:133px">
   <div class="sig" id="sig"><svg width="900" height="300" viewBox="0 0 900 300"><text x="40" y="190">Carpathian</text></svg></div>
 </div>
@@ -362,20 +362,18 @@ function tex(img,pm){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
   for(const[k,v]of[[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,k,v);
   return{t,w:img.width,h:img.height};}
 
-/* STILL is set in Unbounded Black — the same wide grotesk family as the logo — drawn into a texture so the ribbons can pass
-   in front of and behind it. Geometry from Figma: ink from x=99, ink top y=327, 378px, −2% tracking. */
-const LR={x:60,y:290,w:1400,h:380};
+/* STILL uses the exact letterforms of the logo (Monument Extended Ultrabold outlines exported from Figma as assets/still.svg),
+   drawn into a texture at screen resolution so the ribbons can pass in front of and behind it. Footprint: x 99–1514, y 330–620. */
+const LR={x:60,y:300,w:1500,h:360},STILL_BOX={x:99,y:330,w:1547*.915,h:317*.915};let stillImg=null;
 const L={ribB:{x:0,y:233},letters:{x:LR.x,y:LR.y},ribF:{x:0,y:133}};
 let lettersRes=0;
 function lettersCanvas(res){
   const c=document.createElement('canvas');c.width=Math.ceil(LR.w*res);c.height=Math.ceil(LR.h*res);
   const x=c.getContext('2d');x.scale(res,res);x.translate(-LR.x,-LR.y);
-  x.font='900 378px Unbounded, "Arial Black", sans-serif';x.fillStyle='#F5EBDC';x.textBaseline='alphabetic';
-  const base=327+x.measureText('STILL').actualBoundingBoxAscent;let px=99+x.measureText('S').actualBoundingBoxLeft;
-  for(const ch of 'STILL'){x.fillText(ch,px,base);px+=x.measureText(ch).width-378*.02;}
+  if(stillImg)x.drawImage(stillImg,STILL_BOX.x,STILL_BOX.y,STILL_BOX.w,STILL_BOX.h);
   return c;}
 function updateLetters(force){
-  if(!texs||!gl)return;const res=Math.max(.5,Math.min(2,heroT.s*dpr));
+  if(!texs||!gl||!stillImg)return;const res=Math.max(.5,Math.min(2,heroT.s*dpr));
   if(!force&&lettersRes&&Math.abs(res/lettersRes-1)<.2)return;lettersRes=res;
   if(texs.letters)gl.deleteTexture(texs.letters.t);
   const t=tex(lettersCanvas(res),true);texs.letters={t:t.t,w:LR.w,h:LR.h};requestFrame();}
@@ -428,14 +426,13 @@ if(gl){
     gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   }catch(e){console.error(e);P=null;noGL();}
   if(P){
-    const SRC={bg:'assets/bg.jpg',mask:'assets/mask.png',depth:'assets/depth.png',ribF:'assets/ribbonF.webp',ribB:'assets/ribbonB.webp'};
+    const SRC={bg:'assets/bg.jpg',mask:'assets/mask.png',depth:'assets/depth.png',ribF:'assets/ribbonF.webp',ribB:'assets/ribbonB.webp',still:'assets/still.svg'};
     Promise.all(Object.entries(SRC).map(([k,s])=>load(s).then(i=>[k,i]))).then(arr=>{
-      texs={};for(const[k,i]of arr)texs[k]=tex(i,k!=='mask'&&k!=='depth');
+      texs={};for(const[k,i]of arr){if(k==='still'){stillImg=i;continue;}texs[k]=tex(i,k!=='mask'&&k!=='depth');}
       /* wait (briefly) for the script face so the signature never writes itself in a fallback font */
-      const fontsReady=document.fonts?Promise.race([Promise.all([document.fonts.load('190px "Mrs Saint Delafield"'),document.fonts.load('300 20px Montserrat'),document.fonts.load('900 100px Unbounded'),document.fonts.load('300 30px Unbounded')]),new Promise(r=>setTimeout(r,1200))]):Promise.resolve();
+      const fontsReady=document.fonts?Promise.race([Promise.all([document.fonts.load('190px "Mrs Saint Delafield"'),document.fonts.load('300 20px Montserrat'),document.fonts.load('300 30px Unbounded')]),new Promise(r=>setTimeout(r,1200))]):Promise.resolve();
       return fontsReady.then(()=>{updateLetters(true);
-        if(document.fonts&&!document.fonts.check('900 100px Unbounded'))document.fonts.load('900 100px Unbounded').then(()=>updateLetters(true));
-        t0=last=performance.now();requestFrame();setTimeout(showUI,reduce?0:150);});
+                t0=last=performance.now();requestFrame();setTimeout(showUI,reduce?0:150);});
     }).catch(e=>{console.error(e);P=null;noGL();});
   }
 }
