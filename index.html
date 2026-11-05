@@ -11,6 +11,7 @@
 <meta property="og:image" content="assets/bg.jpg">
 <link rel="icon" href="assets/mount.png">
 <link rel="preload" as="image" href="assets/bg.jpg">
+<link rel="preconnect" href="https://images.unsplash.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300&family=Montserrat:wght@300;400;600&family=Mrs+Saint+Delafield&display=swap">
@@ -159,7 +160,8 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .section h3{margin:0 0 10px;font-family:var(--font-display);font-weight:300;font-size:clamp(16px, 1.25vw, 20px);letter-spacing:.06em;text-transform:uppercase;color:var(--cream)}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px, 7vw, 120px);align-items:center}
 .photo{display:block;width:100%;height:auto;border-radius:2px;max-width:100%}
-.photo.tall{aspect-ratio:4/5;object-fit:cover}
+.photo.tall{aspect-ratio:4/5;object-fit:cover;object-position:50% 60%}
+.photo{aspect-ratio:3/2;object-fit:cover}
 .facts{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:34px;padding-top:26px;border-top:1px solid var(--line);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--cream)}
 .facts span::before{content:"";display:inline-block;width:6px;height:6px;margin-right:12px;border-radius:50%;background:var(--lime);vertical-align:middle}
 
@@ -181,11 +183,13 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .exp-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 36px;margin:0;padding:0;list-style:none}
 .exp-list li{padding:26px 0 30px;border-top:1px solid var(--line)}
 .exp-list p{font-size:15px;margin:0}
-.exp-photos{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:20px;margin-top:40px}
-.exp-photos img{width:100%;height:100%;max-height:360px;object-fit:cover;border-radius:2px}
+.exp-photos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:44px}
+.exp-photos figure{margin:0}
+.exp-photos img{display:block;width:100%;aspect-ratio:4/5;height:auto;object-fit:cover;border-radius:2px;max-width:100%}
+.exp-photos figcaption{margin-top:14px;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--cream-dim)}
 
 .location{padding:0;min-height:min(78vh, 720px);display:grid;align-items:end;overflow:hidden}
-.location > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% 62%}
+.location > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%}
 .location::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,7,.9),rgba(5,8,7,.1) 35%,rgba(5,8,7,.55) 70%,rgba(5,8,7,.92))}
 .location h2,.location p{text-shadow:0 2px 18px rgba(0,0,0,.55)}
 .location p{color:var(--cream)}
@@ -353,7 +357,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
     <p>It is made for slowing down: no schedule and no noise, a warm bed under the open sky and a fire on your own deck.</p>
     <div class="facts"><span>Glass domes</span><span>Private decks</span><span>Carpathian views</span></div>
    </div>
-   <img class="photo tall reveal" src="assets/s-about.webp" width="620" height="620" loading="lazy" alt="A glass dome with warm lights on a wooden deck at sunset">
+   <img class="photo tall reveal" src="https://images.unsplash.com/photo-1783696521772-e3ba2c4ef0b5?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1783696521772-e3ba2c4ef0b5?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1783696521772-e3ba2c4ef0b5?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1783696521772-e3ba2c4ef0b5?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1783696521772-e3ba2c4ef0b5?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 44vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A glass geodesic dome glowing with warm light at night">
   </div>
  </section>
 
@@ -362,7 +366,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
    <div class="reveal"><span class="eyebrow">The Domes</span>
    <h2 id="domes-h">Sleep under the open sky, indoors</h2></div>
    <div class="domes-grid">
-    <img class="photo reveal" src="assets/s-dome.webp" width="420" height="280" loading="lazy" alt="Inside a dome: a large bed with linen, lamps and a view of the forest">
+    <img class="photo reveal" src="https://images.unsplash.com/photo-1782022536202-7adbb78756ff?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1782022536202-7adbb78756ff?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1782022536202-7adbb78756ff?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1782022536202-7adbb78756ff?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1782022536202-7adbb78756ff?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 46vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A bedroom with a wide window looking out over the mountains">
     <div class="reveal">
      <div class="features">
       <div><h3>Panoramic glass</h3><p>A wall of glass from floor to ceiling: mountains at sunset, stars at night, mist at sunrise.</p></div>
@@ -394,14 +398,15 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
     <li><h3>Doing nothing</h3><p>A book, a blanket and a view that changes every hour.</p></li>
    </ul>
    <div class="exp-photos reveal">
-    <img src="assets/s-fire.webp" width="440" height="290" loading="lazy" alt="A fire bowl burning on the deck at dusk">
-    <img src="assets/s-sky.webp" width="1000" height="510" loading="lazy" alt="Sunset clouds over the Carpathian ridges">
+    <figure><img src="https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="Logs burning in a round fire pit at night"><figcaption>Fire pit evenings</figcaption></figure>
+    <figure><img src="https://images.unsplash.com/photo-1734596438204-a968213446d6?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1734596438204-a968213446d6?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1734596438204-a968213446d6?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1734596438204-a968213446d6?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1734596438204-a968213446d6?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A wooden sauna and hot tub among pine trees"><figcaption>Spa in the forest</figcaption></figure>
+    <figure><img src="https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A starry night sky above a pine forest with a glowing tent"><figcaption>Stargazing</figcaption></figure>
    </div>
   </div>
  </section>
 
  <section class="section location" id="location" aria-labelledby="loc-h">
-  <img src="assets/bg.jpg" width="1920" height="1080" loading="lazy" decoding="async" alt="Mist in a forested Carpathian valley at sunset">
+  <img src="https://images.unsplash.com/photo-1534805243235-5c9c0f6dfbd0?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1534805243235-5c9c0f6dfbd0?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1534805243235-5c9c0f6dfbd0?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1534805243235-5c9c0f6dfbd0?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1534805243235-5c9c0f6dfbd0?w=2200&q=80&auto=format&fit=crop 2200w" sizes="100vw" width="2200" height="1467" loading="lazy" decoding="async" alt="Layered mountain ridges in warm evening haze">
   <div class="wrap reveal">
    <span class="eyebrow">Location</span>
    <h2 id="loc-h">In the heart of the Ukrainian Carpathians</h2>
@@ -429,7 +434,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 <footer class="footer">
   <a href="#top" aria-label="Back to top"><img src="assets/still-logo.png" width="225" height="37" alt="STILL"></a>
   <nav aria-label="Footer"><a href="#about">About</a><a href="#domes">The Domes</a><a href="#experiences">Experiences</a><a href="#location">Location</a><a href="#contact">Contact</a></nav>
-  <span>© 2026 STILL — Carpathian Retreat</span>
+  <span>© 2026 STILL — Carpathian Retreat · Photos: <a href="https://unsplash.com" rel="noopener" style="display:inline;min-height:0;letter-spacing:0;text-transform:none;font-size:13px">Unsplash</a></span>
 </footer>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
