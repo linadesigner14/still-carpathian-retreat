@@ -182,7 +182,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 
 <div class="hero-layer" id="heroLayer" aria-hidden="true">
   <img class="static" src="assets/ribbonB.webp" alt="" style="left:0;top:233px">
-  <img class="static" src="assets/still.svg" alt="" style="left:99px;top:330px;width:1415px;height:290px">
+  <img class="static" src="assets/still-outline.svg" alt="" style="left:95px;top:326px;width:1423px;height:298px">
   <img class="static" src="assets/ribbonF.webp" alt="" style="left:0;top:133px">
   <div class="sig" id="sig"><svg width="900" height="300" viewBox="0 0 900 300"><text x="40" y="190">Carpathian</text></svg></div>
 </div>
@@ -362,18 +362,22 @@ function tex(img,pm){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
   for(const[k,v]of[[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,k,v);
   return{t,w:img.width,h:img.height};}
 
-/* STILL uses the exact letterforms of the logo (Monument Extended Ultrabold outlines exported from Figma as assets/still.svg),
-   drawn into a texture at screen resolution so the ribbons can pass in front of and behind it. Footprint: x 99–1514, y 330–620. */
-const LR={x:60,y:300,w:1500,h:360},STILL_BOX={x:99,y:330,w:1547*.915,h:317*.915};let stillImg=null;
+/* STILL is drawn as an outline of the logo's own letterforms (Monument Extended Ultrabold, path from assets/still.svg),
+   stroked into a texture at screen resolution so the ribbons can pass in front of and behind it. Footprint: x 99–1514, y 330–620. */
+const LR={x:60,y:300,w:1500,h:360},STILL_SCALE=.915;let stillPath=null;
 const L={ribB:{x:0,y:233},letters:{x:LR.x,y:LR.y},ribF:{x:0,y:133}};
 let lettersRes=0;
 function lettersCanvas(res){
   const c=document.createElement('canvas');c.width=Math.ceil(LR.w*res);c.height=Math.ceil(LR.h*res);
   const x=c.getContext('2d');x.scale(res,res);x.translate(-LR.x,-LR.y);
-  if(stillImg)x.drawImage(stillImg,STILL_BOX.x,STILL_BOX.y,STILL_BOX.w,STILL_BOX.h);
+  if(stillPath){
+    const lw=Math.max(3,1.6/heroT.s);                     /* never thinner than ~1.6 screen px */
+    x.save();x.shadowColor='rgba(0,0,0,.38)';x.shadowBlur=10*res;x.shadowOffsetY=2*res;
+    x.translate(99,330);x.scale(STILL_SCALE,STILL_SCALE);
+    x.lineWidth=lw/STILL_SCALE;x.lineJoin='miter';x.strokeStyle='#F5EBDC';x.stroke(stillPath);x.restore();}
   return c;}
 function updateLetters(force){
-  if(!texs||!gl||!stillImg)return;const res=Math.max(.5,Math.min(2,heroT.s*dpr));
+  if(!texs||!gl||!stillPath)return;const res=Math.max(.5,Math.min(2,heroT.s*dpr));
   if(!force&&lettersRes&&Math.abs(res/lettersRes-1)<.2)return;lettersRes=res;
   if(texs.letters)gl.deleteTexture(texs.letters.t);
   const t=tex(lettersCanvas(res),true);texs.letters={t:t.t,w:LR.w,h:LR.h};requestFrame();}
@@ -426,9 +430,11 @@ if(gl){
     gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   }catch(e){console.error(e);P=null;noGL();}
   if(P){
-    const SRC={bg:'assets/bg.jpg',mask:'assets/mask.png',depth:'assets/depth.png',ribF:'assets/ribbonF.webp',ribB:'assets/ribbonB.webp',still:'assets/still.svg'};
+    const SRC={bg:'assets/bg.jpg',mask:'assets/mask.png',depth:'assets/depth.png',ribF:'assets/ribbonF.webp',ribB:'assets/ribbonB.webp'};
     Promise.all(Object.entries(SRC).map(([k,s])=>load(s).then(i=>[k,i]))).then(arr=>{
-      texs={};for(const[k,i]of arr){if(k==='still'){stillImg=i;continue;}texs[k]=tex(i,k!=='mask'&&k!=='depth');}
+      texs={};for(const[k,i]of arr)texs[k]=tex(i,k!=='mask'&&k!=='depth');
+      return fetch('assets/still.svg').then(r=>r.text()).then(t=>{stillPath=new Path2D(new DOMParser().parseFromString(t,'image/svg+xml').querySelector('path').getAttribute('d'));});
+    }).then(()=>{
       /* wait (briefly) for the script face so the signature never writes itself in a fallback font */
       const fontsReady=document.fonts?Promise.race([Promise.all([document.fonts.load('190px "Mrs Saint Delafield"'),document.fonts.load('300 20px Montserrat'),document.fonts.load('300 30px Unbounded')]),new Promise(r=>setTimeout(r,1200))]):Promise.resolve();
       return fontsReady.then(()=>{updateLetters(true);
