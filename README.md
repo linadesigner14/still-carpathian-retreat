@@ -1,7 +1,12 @@
 # STILL — Carpathian Retreat
 
-Animated hero for the STILL glamping retreat site: a wind storm that settles into stillness, cursor-driven wind, living fog, depth parallax, a fire that flares when you hover the booking button, and letter shadows cast by a cursor light.
+Hero screen for STILL, a glass-dome glamping retreat in the Carpathians.
 
-Static site, no build step. WebGL renders the scene; `assets/` holds the design layers.
+Static site, no build step. A WebGL scene renders the photo as a quiet cinemagraph (slow fog, sky drift, fire flicker, breathing silk ribbons) with a subtle mouse parallax. The interface is real HTML: navigation, tagline, and a working booking bar (date and guest pickers).
+
+Motion rules:
+- one entrance moment: the scene settles and the "Carpathian" signature writes itself (≈2.4 s in total);
+- ambient motion stays slow and low-contrast so it never competes with the booking bar;
+- `prefers-reduced-motion` gets a still scene and no entrance animation.
 
 Run locally: `npx serve .`
