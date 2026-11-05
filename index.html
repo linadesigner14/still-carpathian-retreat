@@ -83,6 +83,7 @@ button{font:inherit;color:inherit}
 .btn-ghost:hover,.btn-ghost:focus-visible{background:var(--lime);border-color:var(--lime);color:var(--ink)}
 .arrow{display:inline-block;transition:transform .3s var(--ease-out)}
 a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
+@media (prefers-reduced-motion: reduce){.cta,.cta-ico svg{transition:none}.cta:hover{transform:none}}
 .menu-btn{display:none}
 
 /* ---------- tagline ---------- */
@@ -108,16 +109,19 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .field .chev{width:max(11px, calc(13px * var(--u)));height:auto;transition:transform .25s var(--ease-out)}
 .field > button[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .divider{width:1px;height:max(18px, calc(22px * var(--u)));background:rgba(11,15,12,.55);margin:0 max(6px, calc(10px * var(--u)))}
-.price{margin-left:auto;display:grid;justify-items:end;gap:2px;padding:0 max(12px, calc(22px * var(--u)));color:var(--ink);white-space:nowrap;line-height:1}
-.price small{font-size:max(10px, calc(11px * var(--u)));font-weight:400;letter-spacing:.18em;text-transform:uppercase;color:rgba(11,15,12,.6)}
-.price span{font-size:max(15px, calc(19px * var(--u)));font-weight:600;letter-spacing:-.01em}
-.price span em{font-style:normal;font-weight:300;font-size:.78em;color:rgba(11,15,12,.7)}
-.cta{height:100%;width:max(230px, calc(340px * var(--u)));border:0;border-radius:999px;background:var(--lime);color:#000;cursor:pointer;
-  display:inline-flex;align-items:center;justify-content:center;gap:.4em;font-weight:600;font-size:max(15px, calc(20px * var(--u)));letter-spacing:0;
-  transition:background-color .25s ease,transform .15s ease}
-.cta:hover{background:var(--lime-hover)}
-.cta:active{transform:scale(.98)}
-.cta:focus-visible{outline-color:var(--ink);outline-offset:3px}
+.cta{margin-left:auto;position:relative;height:100%;width:max(240px, calc(395px * var(--u)));border:0;border-radius:999px;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;padding:0 calc(max(40px, 64px * var(--u)) + max(14px, 20px * var(--u))) 0 max(18px, calc(28px * var(--u)));white-space:nowrap;
+  color:var(--ink);font-weight:600;font-size:max(15px, calc(19px * var(--u)));letter-spacing:.06em;
+  background:linear-gradient(180deg,#EBFA78 0%,#DEF34D 52%,#CDE43B 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),inset 0 -2px 0 rgba(11,15,12,.08),0 6px 18px rgba(170,196,30,.32);
+  transition:box-shadow .3s ease,transform .2s var(--ease-out),filter .3s ease}
+.cta-ico{position:absolute;right:max(6px, calc(8px * var(--u)));top:50%;translate:0 -50%;width:max(40px, calc(64px * var(--u)));aspect-ratio:1;border-radius:50%;
+  display:grid;place-items:center;background:var(--ink);color:var(--lime);transition:background-color .3s ease}
+.cta-ico svg{width:42%;height:auto;transition:transform .35s var(--ease-out)}
+.cta:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),inset 0 -2px 0 rgba(11,15,12,.08),0 10px 30px rgba(200,228,50,.45)}
+.cta:hover .cta-ico svg{transform:translateX(3px) rotate(-45deg)}
+.cta:active{transform:translateY(0) scale(.985);box-shadow:inset 0 2px 4px rgba(11,15,12,.12),0 3px 10px rgba(170,196,30,.3)}
+.cta:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
 .pop{position:absolute;bottom:calc(100% + 14px);left:0;min-width:280px;padding:18px;border-radius:20px;background:rgba(250,249,243,.97);color:var(--ink);
   box-shadow:0 20px 50px rgba(0,0,0,.35);display:grid;gap:14px;font-size:14px}
@@ -238,9 +242,8 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .is-mobile .field > button{width:100%;justify-content:center;gap:10px}
 .is-mobile .divider{align-self:center;margin:0}
 .is-mobile .divider.trail{display:none}
-.is-mobile .price{flex:1 0 100%;order:3;justify-items:center;grid-auto-flow:column;align-items:baseline;gap:8px;padding:6px 0 2px;margin:0}
-.is-mobile .cta{flex:1 0 100%;order:4;width:100%;height:56px;margin:0}
-.is-mobile .pop{left:0;right:0;min-width:0;position:fixed;bottom:calc(170px + env(safe-area-inset-bottom,0px));margin:0 16px}
+.is-mobile .cta{flex:1 0 100%;width:100%;height:58px;margin:0}
+.is-mobile .pop{left:0;right:0;min-width:0;position:fixed;bottom:calc(150px + env(safe-area-inset-bottom,0px));margin:0 16px}
 .divider.trail{display:none}
 
 /* ---------- entrance (only when JS runs; content is visible without it) ---------- */
@@ -306,7 +309,6 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 
   <div class="tag" id="tag" aria-hidden="true">
     <p><span class="line"><span style="--d:.3s">A DEEPER KIND</span></span><span class="line"><span style="--d:.42s">OF ESCAPE</span></span></p>
-    <span class="rule"></span>
   </div>
 
   <form class="booking in" id="booking" style="--d:.5s" novalidate aria-label="Check availability">
@@ -340,8 +342,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
         <button class="done" type="button" data-close>Done</button>
       </div>
     </div>
-    <span class="price" data-price><small>from</small><span>₴4 500 <em>/ night</em></span></span>
-    <button class="cta" type="submit">BOOK YOUR ESCAPE <span class="arrow" aria-hidden="true">→</span></button>
+    <button class="cta" type="submit"><span>BOOK YOUR ESCAPE</span><span class="cta-ico" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none"><path d="M3 10h13M11 4.5 16.5 10 11 15.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
   </form>
   <img class="amenities in" style="--d:.6s" src="assets/icons.png" width="200" height="67" alt="Bedroom dome, spa, nature and mountain views">
   <img class="mark in" style="--d:.6s" src="assets/mount.png" width="116" height="58" alt="">
@@ -392,14 +393,14 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
    <ul class="exp-list reveal">
     <li><h3>Fire pit evenings</h3><p>Blankets, tea and a fire on your deck as the valley goes dark.</p></li>
     <li><h3>Sunrise above the clouds</h3><p>Morning mist settles in the valley below the domes.</p></li>
-    <li><h3>Spa &amp; hot tub</h3><p>Warm up after a cold day outside, with the forest around you.</p></li>
+    <li><h3>Hot tubs</h3><p>A steaming wood-fired tub on the deck, with the hills turning gold.</p></li>
     <li><h3>Forest trails</h3><p>Walk among firs and beech, then come back to a warm dome.</p></li>
     <li><h3>Stargazing</h3><p>Far from city lights, clear nights are full of stars.</p></li>
     <li><h3>Doing nothing</h3><p>A book, a blanket and a view that changes every hour.</p></li>
    </ul>
    <div class="exp-photos reveal">
     <figure><img src="https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1634540635012-e0b263fa1903?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="Logs burning in a round fire pit at night"><figcaption>Fire pit evenings</figcaption></figure>
-    <figure><img src="https://images.unsplash.com/photo-1734596438204-a968213446d6?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1734596438204-a968213446d6?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1734596438204-a968213446d6?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1734596438204-a968213446d6?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1734596438204-a968213446d6?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A wooden sauna and hot tub among pine trees"><figcaption>Spa in the forest</figcaption></figure>
+    <figure><img src="https://images.unsplash.com/photo-1668461363398-1fd41bf2ca79?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1668461363398-1fd41bf2ca79?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1668461363398-1fd41bf2ca79?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1668461363398-1fd41bf2ca79?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1668461363398-1fd41bf2ca79?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A steaming wooden hot tub on a deck above misty forested hills at sunset" style="object-position:22% 60%"><figcaption>Hot tubs at sunset</figcaption></figure>
     <figure><img src="https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1704173423733-d01e3466645a?w=2200&q=80&auto=format&fit=crop 2200w" sizes="(max-width: 900px) 92vw, 30vw" width="1600" height="1067" loading="lazy" decoding="async" alt="A starry night sky above a pine forest with a glowing tent"><figcaption>Stargazing</figcaption></figure>
    </div>
   </div>
@@ -530,9 +531,12 @@ void main(){vec2 q=vP-uImg.xy;vec3 r=ribD(q,uImg.zw,uPh);
    a bright inner rim, a soft shadow, an occasional slow glint, and the shadow the front ribbon casts on it */
 const FS_LET=COMMON+`uniform sampler2D uTex,uRib,uBg;uniform vec4 uImg,uRImg;uniform float uA,uGl;uniform vec3 uBT,uHT;
 vec2 m(vec2 q){vec2 uv=q/uImg.zw;if(uv.x<0.||uv.y<0.||uv.x>1.||uv.y>1.)return vec2(0.);return texture2D(uTex,uv).rg;}
+const vec3 LIME=vec3(.871,.953,.302);
 void main(){vec2 q=vP-uImg.xy;vec2 M=m(q);float a=M.r;
  float shd=m(q-vec2(0.,10.)).g*.30;
- if(a<.002){gl_FragColor=vec4(0.,0.,0.,shd)*uA;return;}
+ float glow=M.g*(1.-a)*.30;
+ vec4 outside=vec4(LIME*glow*uExpo,glow);outside+=vec4(0.,0.,0.,shd)*(1.-outside.a);
+ if(a<.002){gl_FragColor=outside*uA;return;}
  vec2 bp=((vP*uHT.x+uHT.yz)-uBT.yz)/uBT.x;vec3 bl=vec3(0.);
  for(int i=0;i<20;i++){float an=float(i)*2.39996,r=5.+float(i)*1.6;bl+=texture2D(uBg,clamp((bp+vec2(cos(an),sin(an))*r)/uRes,vec2(.001),vec2(.999))).rgb;}
  bl/=20.;
@@ -541,13 +545,14 @@ void main(){vec2 q=vP-uImg.xy;vec2 M=m(q);float a=M.r;
  c+=vec3(1.)*.22*(1.-smoothstep(0.,.45,dg));c=mix(c,vec3(1.,.75,.45),.22*smoothstep(.45,1.,dg));
  vec2 e=vec2(2.5,0.);float gx=m(q+e.xy).g-m(q-e.xy).g,gy=m(q+e.yx).g-m(q-e.yx).g;
  c+=vec3(1.,.96,.9)*clamp(-(gx*.7+gy*.7)*2.,0.,1.)*.18;
- float mn=min(min(m(q+vec2(2.2,0.)).r,m(q-vec2(2.2,0.)).r),min(m(q+vec2(0.,2.2)).r,m(q-vec2(0.,2.2)).r));
- c=mix(c,vec3(1.,.985,.95),clamp((a-mn)*1.8,0.,.95));
+ float mn=min(min(m(q+vec2(3.,0.)).r,m(q-vec2(3.,0.)).r),min(m(q+vec2(0.,3.)).r,m(q-vec2(0.,3.)).r));
+ mn=min(mn,min(min(m(q+vec2(2.1,2.1)).r,m(q-vec2(2.1,2.1)).r),min(m(q+vec2(2.1,-2.1)).r,m(q-vec2(2.1,-2.1)).r)));
  float band=(q.x+q.y*.45)-uGl;c+=vec3(1.)*exp(-band*band/9000.)*.16;
  vec2 sp=vP-vec2(14.,26.);vec2 rq=sp-uRImg.xy;vec2 ruv=(rq-ribD(rq,uRImg.zw,0.).xy)/uRImg.zw;vec2 px=1./uRImg.zw;float sh=0.;
  for(int i=0;i<3;i++)for(int j=0;j<3;j++){vec2 u2=ruv+vec2(float(i)-1.,float(j)-1.)*px*14.;sh+=texture2D(uRib,u2).a*step(u2.x,1.)*step(0.,u2.y)*step(u2.y,1.);}
  c*=mix(vec3(1.),vec3(.78,.74,.68),clamp(sh/9.,0.,1.)*.5);
- vec4 col=vec4(c*uExpo*a,a)+vec4(0.,0.,0.,shd)*(1.-a);
+ float rim=clamp((a-mn)*2.,0.,1.);c=mix(c,LIME*1.08,rim);
+ vec4 col=vec4(c*uExpo*a,a)+outside*(1.-a);
  gl_FragColor=col*uA;}`;
 
 let P,texs,buf;
