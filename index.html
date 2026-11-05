@@ -182,7 +182,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 
 <div class="hero-layer" id="heroLayer" aria-hidden="true">
   <img class="static" src="assets/ribbonB.webp" alt="" style="left:0;top:233px">
-  <img class="static" src="assets/still-outline.svg" alt="" style="left:95px;top:326px;width:1423px;height:298px">
+  <img class="static" src="assets/still.svg" alt="" style="left:99px;top:330px;width:1415px;height:290px">
   <img class="static" src="assets/ribbonF.webp" alt="" style="left:0;top:133px">
   <div class="sig" id="sig"><svg width="900" height="300" viewBox="0 0 900 300"><text x="40" y="190">Carpathian</text></svg></div>
 </div>
@@ -362,8 +362,9 @@ function tex(img,pm){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
   for(const[k,v]of[[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,k,v);
   return{t,w:img.width,h:img.height};}
 
-/* STILL is drawn as an outline of the logo's own letterforms (Monument Extended Ultrabold, path from assets/still.svg),
-   stroked into a texture at screen resolution so the ribbons can pass in front of and behind it. Footprint: x 99–1514, y 330–620. */
+/* STILL uses the logo's own letterforms (Monument Extended Ultrabold, path from assets/still.svg). Inside the letters sits a
+   small Carpathian landscape: a sunset sky and three mountain ridges with mist between them. It is drawn into a texture at
+   screen resolution so the ribbons can pass in front of and behind it. Footprint: x 99–1514, y 330–620. */
 const LR={x:60,y:300,w:1500,h:360},STILL_SCALE=.915;let stillPath=null;
 const L={ribB:{x:0,y:233},letters:{x:LR.x,y:LR.y},ribF:{x:0,y:133}};
 let lettersRes=0;
@@ -371,10 +372,20 @@ function lettersCanvas(res){
   const c=document.createElement('canvas');c.width=Math.ceil(LR.w*res);c.height=Math.ceil(LR.h*res);
   const x=c.getContext('2d');x.scale(res,res);x.translate(-LR.x,-LR.y);
   if(stillPath){
-    const lw=Math.max(3,1.6/heroT.s);                     /* never thinner than ~1.6 screen px */
-    x.save();x.shadowColor='rgba(0,0,0,.38)';x.shadowBlur=10*res;x.shadowOffsetY=2*res;
-    x.translate(99,330);x.scale(STILL_SCALE,STILL_SCALE);
-    x.lineWidth=lw/STILL_SCALE;x.lineJoin='miter';x.strokeStyle='#F5EBDC';x.stroke(stillPath);x.restore();}
+    const Y0=330,H=290,X0=79,X1=1534,tri=u=>1-2*Math.abs((u-Math.floor(u))-.5);
+    const ridge=(b,amp,seed)=>{const p=new Path2D();p.moveTo(X0,Y0+H+12);
+      for(let i=0;i<=300;i++){const xx=X0+(X1-X0)*i/300;p.lineTo(xx,b-amp*(.55*tri(xx/310+seed)+.3*tri(xx/140+seed*2.3)+.15*tri(xx/57+seed*3.7)));}
+      p.lineTo(X1,Y0+H+12);p.closePath();return p;};
+    const word=new Path2D();word.addPath(stillPath,new DOMMatrix([STILL_SCALE,0,0,STILL_SCALE,99,330]));
+    /* soft warm shadow under the word, so it holds against the photo */
+    x.save();x.shadowColor='rgba(40,16,0,.42)';x.shadowBlur=24*res;x.shadowOffsetY=6*res;x.fillStyle='#F5EBDC';x.fill(word);x.restore();
+    x.save();x.clip(word);
+    const sky=x.createLinearGradient(0,Y0,0,Y0+H);
+    sky.addColorStop(0,'#F5EBDC');sky.addColorStop(.45,'#FCD6AD');sky.addColorStop(.75,'#F5A35C');sky.addColorStop(1,'#ED8C4D');
+    x.fillStyle=sky;x.fillRect(X0,Y0,X1-X0,H);
+    for(const[b,amp,seed,col,op]of[[Y0+H*.50,78,.13,'#E9A47C',1],[Y0+H*.60,24,.61,'#F5EBDC',.45],[Y0+H*.68,64,.37,'#C97C58',1],[Y0+H*.78,16,.83,'#F5EBDC',.35],[Y0+H*.86,50,.71,'#9C5C42',1]]){
+      x.globalAlpha=op;x.fillStyle=col;x.fill(ridge(b,amp,seed));}
+    x.restore();}
   return c;}
 function updateLetters(force){
   if(!texs||!gl||!stillPath)return;const res=Math.max(.5,Math.min(2,heroT.s*dpr));
