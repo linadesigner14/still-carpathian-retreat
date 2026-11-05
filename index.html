@@ -343,13 +343,29 @@ void main(){vec2 q=vP-uImg.xy;vec3 r=ribD(q,uImg.zw,uPh);
  vec2 uv=(q-r.xy)/uImg.zw;vec4 s=texture2D(uTex,uv);s*=step(uv.x,1.)*step(0.,uv.y)*step(uv.y,1.);
  s.rgb*=1.+clamp(r.z*1.6,-.2,.24);gl_FragColor=vec4(s.rgb*uExpo,s.a)*uA;}`;
 
-/* STILL letters + the soft shadow the front ribbon casts on them */
-const FS_LET=COMMON+`uniform sampler2D uTex,uRib;uniform vec4 uImg,uRImg;uniform float uA;
-void main(){vec2 q=vP-uImg.xy;vec2 uv=q/uImg.zw;vec4 s=texture2D(uTex,uv)*step(0.,uv.x)*step(uv.x,1.)*step(0.,uv.y)*step(uv.y,1.);
- if(s.a>.003){vec2 sp=vP-vec2(14.,26.);vec2 rq=sp-uRImg.xy;vec2 ruv=(rq-ribD(rq,uRImg.zw,0.).xy)/uRImg.zw;vec2 px=1./uRImg.zw;float sh=0.;
+/* STILL as a solid 3D wordmark: cream face with a soft bevel lit from the sunset side, warm extruded sides,
+   a contact shadow, an occasional slow sun glint, and the shadow the front ribbon casts on it */
+const FS_LET=COMMON+`uniform sampler2D uTex,uRib;uniform vec4 uImg,uRImg;uniform float uA,uDep,uGl;uniform vec2 uDir;
+vec2 m(vec2 q){vec2 uv=q/uImg.zw;if(uv.x<0.||uv.y<0.||uv.x>1.||uv.y>1.)return vec2(0.);return texture2D(uTex,uv).rg;}
+void main(){vec2 q=vP-uImg.xy;vec2 F=m(q);float face=F.r;vec2 D=uDir*uDep;
+ float side=0.,th=1.;
+ if(face<.995&&uDep>.01){for(int i=1;i<=28;i++){float t=float(i)/28.;if(m(q-D*t).r>.5){side=1.;th=t;break;}}}
+ float shd=m(q-D*1.25-vec2(0.,10.)*uDep).g*.45*uDep;
+ vec2 e=vec2(2.5,0.);float gx=m(q+e.xy).g-m(q-e.xy).g,gy=m(q+e.yx).g-m(q-e.yx).g;
+ float bev=clamp(-(gx*.75-gy*.66)*2.4,-1.,1.);
+ float vy=clamp((q.y-40.)/300.,0.,1.);
+ vec3 fc=mix(vec3(.98,.945,.885),vec3(.955,.85,.735),vy);
+ fc*=1.+bev*.09;fc+=vec3(1.,.55,.25)*max(bev,0.)*.06;
+ float band=(q.x+q.y*.45)-uGl;fc+=vec3(1.,.93,.82)*exp(-band*band/7200.)*.20;
+ vec3 sc=mix(vec3(.82,.57,.41),vec3(.30,.17,.11),pow(th,.8));
+ sc+=vec3(.25,.12,.04)*exp(-band*band/12000.)*.5;
+ vec4 col=vec4(0.,0.,0.,shd*(1.-side));
+ col=mix(col,vec4(sc,1.),side);
+ col=col*(1.-face)+vec4(fc,1.)*face;
+ if(col.a>.003){vec2 sp=vP-vec2(14.,26.);vec2 rq=sp-uRImg.xy;vec2 ruv=(rq-ribD(rq,uRImg.zw,0.).xy)/uRImg.zw;vec2 px=1./uRImg.zw;float sh=0.;
   for(int i=0;i<3;i++)for(int j=0;j<3;j++){vec2 u2=ruv+vec2(float(i)-1.,float(j)-1.)*px*14.;sh+=texture2D(uRib,u2).a*step(u2.x,1.)*step(0.,u2.y)*step(u2.y,1.);}
-  sh=clamp(sh/9.,0.,1.);s.rgb*=mix(vec3(1.),vec3(.72,.66,.57),sh*.6);}
- gl_FragColor=vec4(s.rgb*uExpo,s.a)*uA;}`;
+  sh=clamp(sh/9.,0.,1.);col.rgb*=mix(vec3(1.),vec3(.72,.66,.57),sh*.6*max(face,side));}
+ gl_FragColor=vec4(col.rgb*uExpo,col.a)*uA;}`;
 
 let P,texs,buf;
 function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
@@ -362,36 +378,27 @@ function tex(img,pm){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);
   for(const[k,v]of[[gl.TEXTURE_MIN_FILTER,gl.LINEAR],[gl.TEXTURE_MAG_FILTER,gl.LINEAR],[gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE],[gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE]])gl.texParameteri(gl.TEXTURE_2D,k,v);
   return{t,w:img.width,h:img.height};}
 
-/* STILL uses the logo's own letterforms (Monument Extended Ultrabold, path from assets/still.svg). Inside the letters sits a
-   small Carpathian landscape: a sunset sky and three mountain ridges with mist between them. It is drawn into a texture at
-   screen resolution so the ribbons can pass in front of and behind it. Footprint: x 99–1514, y 330–620. */
-const LR={x:60,y:300,w:1500,h:360},STILL_SCALE=.915;let stillPath=null;
+/* STILL uses the logo's own letterforms (Monument Extended Ultrabold, path from assets/still.svg). They are rasterised once
+   per screen size into a mask (R = letters, G = blurred letters); the shader turns that into a lit 3D wordmark.
+   Footprint of the face: x 99–1514, y 330–620; the rect leaves room for the extrusion and shadow. */
+const LR={x:30,y:290,w:1540,h:430},STILL_SCALE=.915;let stillPath=null;
 const L={ribB:{x:0,y:233},letters:{x:LR.x,y:LR.y},ribF:{x:0,y:133}};
 let lettersRes=0;
 function lettersCanvas(res){
-  const c=document.createElement('canvas');c.width=Math.ceil(LR.w*res);c.height=Math.ceil(LR.h*res);
-  const x=c.getContext('2d');x.scale(res,res);x.translate(-LR.x,-LR.y);
-  if(stillPath){
-    const Y0=330,H=290,X0=79,X1=1534,tri=u=>1-2*Math.abs((u-Math.floor(u))-.5);
-    const ridge=(b,amp,seed)=>{const p=new Path2D();p.moveTo(X0,Y0+H+12);
-      for(let i=0;i<=300;i++){const xx=X0+(X1-X0)*i/300;p.lineTo(xx,b-amp*(.55*tri(xx/310+seed)+.3*tri(xx/140+seed*2.3)+.15*tri(xx/57+seed*3.7)));}
-      p.lineTo(X1,Y0+H+12);p.closePath();return p;};
-    const word=new Path2D();word.addPath(stillPath,new DOMMatrix([STILL_SCALE,0,0,STILL_SCALE,99,330]));
-    /* soft warm shadow under the word, so it holds against the photo */
-    x.save();x.shadowColor='rgba(40,16,0,.42)';x.shadowBlur=24*res;x.shadowOffsetY=6*res;x.fillStyle='#F5EBDC';x.fill(word);x.restore();
-    x.save();x.clip(word);
-    const sky=x.createLinearGradient(0,Y0,0,Y0+H);
-    sky.addColorStop(0,'#F5EBDC');sky.addColorStop(.45,'#FCD6AD');sky.addColorStop(.75,'#F5A35C');sky.addColorStop(1,'#ED8C4D');
-    x.fillStyle=sky;x.fillRect(X0,Y0,X1-X0,H);
-    for(const[b,amp,seed,col,op]of[[Y0+H*.50,78,.13,'#E9A47C',1],[Y0+H*.60,24,.61,'#F5EBDC',.45],[Y0+H*.68,64,.37,'#C97C58',1],[Y0+H*.78,16,.83,'#F5EBDC',.35],[Y0+H*.86,50,.71,'#9C5C42',1]]){
-      x.globalAlpha=op;x.fillStyle=col;x.fill(ridge(b,amp,seed));}
-    x.restore();}
-  return c;}
+  const W2=Math.ceil(LR.w*res),H2=Math.ceil(LR.h*res);
+  const word=new Path2D();word.addPath(stillPath,new DOMMatrix([STILL_SCALE,0,0,STILL_SCALE,99,330]));
+  const draw=(k)=>{const c=document.createElement('canvas');c.width=Math.max(1,Math.round(W2*k));c.height=Math.max(1,Math.round(H2*k));
+    const x=c.getContext('2d');x.setTransform(res*k,0,0,res*k,-LR.x*res*k,-LR.y*res*k);x.fillStyle='#fff';x.fill(word);return c;};
+  const sharp=draw(1),small=draw(Math.min(1,.2/res));
+  const big=document.createElement('canvas');big.width=W2;big.height=H2;const bx=big.getContext('2d');bx.imageSmoothingQuality='high';bx.drawImage(small,0,0,W2,H2);
+  const a=sharp.getContext('2d').getImageData(0,0,W2,H2).data,b=bx.getImageData(0,0,W2,H2).data,out=new ImageData(W2,H2),o=out.data;
+  for(let i=0;i<a.length;i+=4){o[i]=a[i+3];o[i+1]=b[i+3];o[i+3]=255;}
+  return out;}
 function updateLetters(force){
   if(!texs||!gl||!stillPath)return;const res=Math.max(.5,Math.min(2,heroT.s*dpr));
   if(!force&&lettersRes&&Math.abs(res/lettersRes-1)<.2)return;lettersRes=res;
   if(texs.letters)gl.deleteTexture(texs.letters.t);
-  const t=tex(lettersCanvas(res),true);texs.letters={t:t.t,w:LR.w,h:LR.h};requestFrame();}
+  const t=tex(lettersCanvas(res),false);texs.letters={t:t.t,w:LR.w,h:LR.h};requestFrame();}
 const DEP={ribB:6,letters:9,ribF:13,sig:11};
 
 /* ---------- parallax (fine pointers only) ---------- */
@@ -409,6 +416,8 @@ function draw(now){
   const t=reduce?10:(now-t0)/1000,dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
   const expo=reduce?1:eo(cl(t/.9)),zoom=reduce?1:1+.035*(1-eo(cl(t/1.8)));
   const lA=reduce?1:eo(cl((t-.15)/.8)),lY=reduce?0:16*(1-eo(cl((t-.15)/1.1)));
+  const dep=reduce?1:eo(cl((t-.45)/1.3));
+  const gc=reduce?1:((t-2.4)%7.5)/1.9,glint=(t>2.4&&gc<1)?-500+2600*(gc<.5?2*gc*gc:1-Math.pow(-2*gc+2,2)/2):-3000;
   const ease=1-Math.exp(-dt*2.2);par.x+=(parT.x-par.x)*ease;par.y+=(parT.y-par.y)*ease;
   if(!reduce&&(t<2||Math.abs(par.x)+Math.abs(par.y)>1e-4))placeDom(zoom);
   sigEl.style.translate=`${(-par.x*DEP.sig).toFixed(2)}px ${(-par.y*DEP.sig*.6).toFixed(2)}px`;
@@ -427,6 +436,7 @@ function draw(now){
   rib('ribB',2.1);
   {const tx=texs.letters,o=pos('letters'),rf=pos('ribF');const u=use(P.let,heroT);
    gl.uniform4f(u.uRect,o.x,o.y+lY,tx.w,tx.h);gl.uniform4f(u.uImg,o.x,o.y+lY,tx.w,tx.h);gl.uniform4f(u.uRImg,rf.x,rf.y,texs.ribF.w,texs.ribF.h);gl.uniform1f(u.uA,lA);
+   gl.uniform1f(u.uDep,dep);gl.uniform1f(u.uGl,glint);gl.uniform2f(u.uDir,-15-par.x*11,24-par.y*12);
    bind(0,tx.t,u.uTex);bind(1,texs.ribF.t,u.uRib);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
   rib('ribF',0);
   if(!reduce)requestFrame();
