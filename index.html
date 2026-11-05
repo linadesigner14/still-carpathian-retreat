@@ -162,13 +162,15 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .section h2{margin:0 0 28px;font-family:var(--font-display);font-weight:300;font-size:clamp(28px, 3.3vw, 52px);line-height:1.18;letter-spacing:.03em;text-transform:uppercase;text-wrap:balance;color:var(--cream)}
 .section p{margin:0 0 18px;max-width:58ch;font-weight:300;font-size:clamp(16px, 1.1vw, 18px);line-height:1.75;color:var(--cream-dim)}
 .section h3{margin:0 0 10px;font-family:var(--font-display);font-weight:300;font-size:clamp(16px, 1.25vw, 20px);letter-spacing:.06em;text-transform:uppercase;color:var(--cream)}
-.about{overflow:hidden;isolation:isolate}
+.domes{overflow:hidden;isolation:isolate}
 .section-bg{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:50% 45%}
-.about::before{content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,var(--void) 0%,rgba(5,8,7,0) 18%,rgba(5,8,7,0) 82%,var(--void) 100%),
-             linear-gradient(90deg,rgba(5,8,7,.9) 0%,rgba(5,8,7,.72) 42%,rgba(5,8,7,.38) 100%)}
-.about h2,.about p{text-shadow:0 2px 18px rgba(0,0,0,.45)}
-.about p{color:rgba(245,235,220,.86)}
+.domes::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(180deg,var(--void) 0%,rgba(5,8,7,.25) 20%,rgba(5,8,7,.25) 80%,var(--void) 100%),
+             linear-gradient(90deg,rgba(5,8,7,.55) 0%,rgba(5,8,7,.62) 50%,rgba(5,8,7,.86) 100%)}
+.domes h2,.domes h3,.domes p,.domes .from{text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.domes p{color:rgba(245,235,220,.88)}
+.domes .features div{border-top-color:rgba(245,235,220,.28)}
+.domes .photo{box-shadow:0 30px 80px rgba(0,0,0,.55);outline:1px solid rgba(245,235,220,.14);outline-offset:-1px}
 .about-photo{box-shadow:0 30px 80px rgba(0,0,0,.55);outline:1px solid rgba(245,235,220,.14);outline-offset:-1px}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px, 7vw, 120px);align-items:center}
 .photo{display:block;width:100%;height:auto;border-radius:2px;max-width:100%}
@@ -177,7 +179,6 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
 .facts{display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:34px;padding-top:26px;border-top:1px solid var(--line);font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--cream)}
 .facts span::before{content:"";display:inline-block;width:6px;height:6px;margin-right:12px;border-radius:50%;background:var(--lime);vertical-align:middle}
 
-.domes{background:linear-gradient(180deg,var(--void),#0b0f0d)}
 .domes-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(40px, 6vw, 96px);align-items:start;margin-top:56px}
 .features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 36px}
 .features div{padding-top:22px;border-top:1px solid var(--line)}
@@ -357,8 +358,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
   <a class="scroll-cue in" style="--d:1s" href="#about">Scroll</a>
  </section>
 
- <section class="section about" id="about" aria-labelledby="about-h">
-  <img class="section-bg" src="https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=2200&q=80&auto=format&fit=crop 2200w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=2800&q=80&auto=format&fit=crop 2800w" sizes="100vw" width="2800" height="1867" loading="lazy" decoding="async" alt="">
+ <section class="section" id="about" aria-labelledby="about-h">
   <div class="wrap split">
    <div class="reveal">
     <span class="eyebrow">About STILL</span>
@@ -372,6 +372,7 @@ a:hover .arrow,button:hover .arrow{transform:translateX(4px)}
  </section>
 
  <section class="section domes" id="domes" aria-labelledby="domes-h">
+  <img class="section-bg" src="https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=1600&q=80&auto=format&fit=crop" srcset="https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=640&q=80&auto=format&fit=crop 640w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=1080&q=80&auto=format&fit=crop 1080w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=1600&q=80&auto=format&fit=crop 1600w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=2200&q=80&auto=format&fit=crop 2200w, https://images.unsplash.com/photo-1774013710036-982f187dfe38?w=2800&q=80&auto=format&fit=crop 2800w" sizes="100vw" width="2800" height="1867" loading="lazy" decoding="async" alt="">
   <div class="wrap">
    <div class="reveal"><span class="eyebrow">The Domes</span>
    <h2 id="domes-h">Sleep under the open sky, indoors</h2></div>
